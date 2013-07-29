@@ -1,11 +1,11 @@
 configure :development do
-  set :database, 'sqlite:///development.db'
+  set :database, 'sqlite:///var/development.db'
 end
 
 configure :test do
-  set :database, 'sqlite:///test.db'
+  set :database, 'sqlite:///var/test.db'
 end
 
 configure :production do
-  set :database, 'sqlite:///production.db'
+  set :database, 'sqlite:///var/production.db'
 end
