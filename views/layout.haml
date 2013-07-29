@@ -3,4 +3,12 @@
   %head
     %title WhatCrop
   %body
-    = yield
+    - if @flash
+      .flash
+        - @flash.each do |name, messages|
+          %div{ class: "flash-#{name}" }
+            %ul
+              - messages.map(&:strip).reject(&:empty?).each do |message|
+                %li= message
+    .content
+      = yield
