@@ -4,19 +4,8 @@ require 'sinatra/activerecord'
 require 'haml'
 
 require './config'
+require './helpers'
 require './models'
-
-enable :sessions
-set :session_secret, 'seekret seekret'
-
-def flash(type, msg)
-  session['flash'] ||= {}
-  session['flash'][type] ||= []
-  session['flash'][type] << msg
-
-  @flash[type] ||= []
-  @flash[type] << msg
-end
 
 before do
   @flash = session['flash'] || {}
