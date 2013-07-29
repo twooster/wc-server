@@ -1,10 +1,11 @@
 require 'bundler/setup'
 require 'sinatra'
 require 'sinatra/activerecord'
+require 'haml'
 
 require './config'
 require './models'
 
 get '/' do
-  'Nothing here'
+  haml :index
 end
