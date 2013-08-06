@@ -4,7 +4,12 @@ gem 'sinatra'
 gem 'sinatra-activerecord'
 gem 'rake'
 gem 'haml'
+gem 'json'
 
 group :development, :test, :production do
   gem 'sqlite3'
+end
+
+group :development do
+  gem 'tux'
 end

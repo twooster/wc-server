@@ -1,15 +1,35 @@
-class User < ActiveRecord::Base
-  has_many :games
-  has_many :rounds, through: :game
-end
+module WhatCrop
+  module Models
+    class Game < ActiveRecord::Base
+      has_many :rounds
 
-class Game < ActiveRecord::Base
-  belongs_to :user
-  has_many :rounds
-end
+      scope :complete, ->() {
+        where('last_round = max_rounds')
+      }
 
-class Round < ActiveRecord::Base
-  belongs_to :game
+      def complete?
+        last_round == max_rounds
+      end
 
-  alias_attribute :played_at, :created_at
+      def record_round(attrs = {})
+        return nil if complete?
+        with_lock do
+          reload
+          unless complete?
+            rounds.create!(attrs) do |round|
+              round.round_number = last_round
+            end
+            update_attributes!(last_round: last_round+1)
+            self
+          end
+        end
+      end
+    end
+
+    class Round < ActiveRecord::Base
+      belongs_to :game
+
+      alias_attribute :played_at, :created_at
+    end
+  end
 end
