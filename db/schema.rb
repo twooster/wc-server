@@ -13,7 +13,8 @@
 ActiveRecord::Schema.define(version: 20130729042809) do
 
   create_table "games", force: true do |t|
-    t.integer  "user_id",    null: false
+    t.integer  "max_rounds", null: false
+    t.integer  "last_round"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -26,9 +27,6 @@ ActiveRecord::Schema.define(version: 20130729042809) do
     t.datetime "created_at"
   end
 
-  create_table "users", force: true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+  add_index "rounds", ["game_id", "round_number"], name: "index_rounds_on_game_id_and_round_number", unique: true
 
 end

@@ -8,11 +8,13 @@ require './models'
 
 module WhatCrop
   class App < Sinatra::Base
+    register Sinatra::ActiveRecordExtension
+
     BASEDIR = File.dirname(File.expand_path(__FILE__))
 
-    configure :development do
-      set :database, 'sqlite:///var/development.db'
+    set :database, 'sqlite:///var/development.db'
 
+    configure :development do
       enable :show_exceptions, :dump_errors
       disable :raise_errors, :clean_trace
     end
@@ -33,16 +35,9 @@ module WhatCrop
     set :public_folder,  "#{BASEDIR}/public"
     set :static,         true
 
-=begin
-    ActiveRecord::Base.establish_connection(
-      :adapter => 'sqlite3',
-      :database => settings.database
-    )
-=end
-
     before do
       if gid = session[:gid]
-        @game = Models::Game.where(id: gid).first
+        @game = Models::Game.where(:id => gid).first
         session.delete(:gid) unless @game
       end
     end
@@ -52,7 +47,7 @@ module WhatCrop
     end
 
     post '/games' do
-      game = Models::Game.create!
+      game = Models::Game.create!(:max_rounds => 50)
       session[:gid] = game.id
       redirect to("/games/#{game.id}")
     end
@@ -64,26 +59,30 @@ module WhatCrop
     get '/games/:id' do
       redirect to('/game/:id/complete') if @game.complete?
 
-      haml :game, locals: { game: @game }
+      haml :game, :locals => { :game => @game }
     end
 
     get '/games/:id/complete' do
       redirect to("/games/#{params[:id]}") unless @game.complete?
 
-      render :game_complete, locals: { game: @game }
+      haml :game_complete, :locals => { :game => @game }
     end
 
     post '/games/:id/rounds' do
-      if @game.record_round(params.delete(:id))
+      puts params
+      if @game.record_round(
+        :weather => params[:weather],
+        :crop_choice => params[:crop_choice]
+        )
         if @game.complete?
           {
-            status: 'game_complete',
-            redirect: to("/games/#{params[:id]}/complete")
+            :status => 'game_complete',
+            :redirect => to("/games/#{params[:id]}/complete")
           }.to_json
         else
           {
-            status: 'round_complete'
-          }
+            :status => 'round_complete'
+          }.to_json
         end
       else
         400
