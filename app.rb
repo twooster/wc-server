@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'bundler/setup'
 require 'sinatra/base'
 require 'sinatra/activerecord'
@@ -13,14 +14,14 @@ module WhatCrop
     BASEDIR = File.dirname(File.expand_path(__FILE__))
 
     configure :development do
-      set :database, 'sqlite:///var/development.db'
+      set :database, 'sqlite://development.db'
 
       enable :show_exceptions, :dump_errors
       disable :raise_errors, :clean_trace
     end
 
     configure :test do
-      set :database, 'sqlite:///var/test.db'
+      set :database, 'sqlite://test.db'
 
       enable :logging, :raise_errors, :dump_errors
     end
