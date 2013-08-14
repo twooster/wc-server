@@ -6,7 +6,7 @@ gem 'rake'
 gem 'haml'
 gem 'json'
 
-group :development, :test, :production do
+group :development, :test do
   gem 'sqlite3'
 end
 

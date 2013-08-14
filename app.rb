@@ -12,9 +12,9 @@ module WhatCrop
 
     BASEDIR = File.dirname(File.expand_path(__FILE__))
 
-    set :database, 'sqlite:///var/development.db'
-
     configure :development do
+      set :database, 'sqlite:///var/development.db'
+
       enable :show_exceptions, :dump_errors
       disable :raise_errors, :clean_trace
     end
@@ -26,7 +26,6 @@ module WhatCrop
     end
 
     configure :production do
-      set :database, 'sqlite:///var/production.db'
     end
 
     enable :sessions
