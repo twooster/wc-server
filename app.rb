@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/secrets.rb' rescue nil
+
 require 'rubygems'
 require 'bundler/setup'
 require 'sinatra/base'
@@ -27,19 +29,7 @@ module WhatCrop
     end
 
     configure :production do
-      raise unless db_url = ENV['DATABASE_URL']
-      raise unless ENV['SESSION_SECRET']
-
-      uri = URI(db_url)
-      ActiveRecord::Base.establish_connection(
-        :adapter  => uri.scheme == 'mysql' ? 'mysql2' : uri.scheme,
-        :host     => uri.host,
-        :database => uri.path.split('/').select { |x| !x.empty? }.first,
-        :username => uri.user,
-        :password => uri.password
-      )
-
-      set :session_secret, ENV['SESSION_SECRET']
+      set :session_secret, (ENV['SESSION_SECRET'] || raise)
     end
 
     set :public_folder,  "#{BASEDIR}/public"

@@ -6,7 +6,6 @@ log = File.new("log/sinatra.log", "a")
 $stdout.reopen(log)
 $stderr.reopen(log)
 
-require File.dirname(__FILE__) + '/secrets.rb' rescue nil
 require File.dirname(__FILE__) + '/app.rb'
 
 run WhatCrop::App.new
