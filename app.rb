@@ -69,21 +69,21 @@ module WhatCrop
     end
 
     post '/games/:id/rounds' do
-      puts params
       if @game.record_round(
-        :weather => params[:weather],
-        :crop_choice => params[:crop_choice]
+          :weather     => params[:weather],
+          :crop_choice => params[:crop_choice],
+          :score       => params[:score]
         )
         if @game.complete?
           {
             :status => 'game_complete',
             :redirect => to("/games/#{params[:id]}/complete")
-          }.to_json
+          }
         else
           {
             :status => 'round_complete'
-          }.to_json
-        end
+          }
+        end.to_json
       else
         400
       end
