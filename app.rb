@@ -4,6 +4,7 @@ require 'sinatra/base'
 require 'sinatra/activerecord'
 require 'haml'
 require 'json'
+require 'uri'
 
 require './models'
 
@@ -13,24 +14,33 @@ module WhatCrop
 
     BASEDIR = File.dirname(File.expand_path(__FILE__))
 
-    configure :development do
-      set :database, 'sqlite://development.db'
+    enable :sessions
+    set :session_secret, 'development secret'
 
+    configure :development do
       enable :show_exceptions, :dump_errors
       disable :raise_errors, :clean_trace
     end
 
     configure :test do
-      set :database, 'sqlite://test.db'
-
       enable :logging, :raise_errors, :dump_errors
     end
 
     configure :production do
-    end
+      raise unless db_url = ENV['DATABASE_URL']
+      raise unless ENV['SESSION_SECRET']
 
-    enable :sessions
-    set :session_secret, 'seekret seekret'
+      uri = URI(db_url)
+      ActiveRecord::Base.establish_connection(
+        :adapter  => uri.scheme == 'mysql' ? 'mysql2' : uri.scheme,
+        :host     => uri.host,
+        :database => uri.path.split('/').select { |x| !x.empty? }.first,
+        :username => uri.user,
+        :password => uri.password
+      )
+
+      set :session_secret, ENV['SESSION_SECRET']
+    end
 
     set :public_folder,  "#{BASEDIR}/public"
     set :static,         true
