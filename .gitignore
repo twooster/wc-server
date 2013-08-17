@@ -1,2 +1,2 @@
 *.db
-secrets.rb
+system/secrets.rb
