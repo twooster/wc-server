@@ -3,19 +3,17 @@ set :user,        'whatcropaccount'
 set :repository,  'git://github.com/twooster/wc-server'
 set :deploy_to,   '/home/whatcropaccount/v2.whatcrop.org'
 
-set :scm, :git
-set :use_sudo, false
-set :git_enable_submodules, 1
-set :rake, 'bundle exec rake'
+server 'v2.whatcrop.org', :web, :app, :db, :primary => true
 
-set :default_shell, "sh -l"
+set :scm, :git
+set :git_enable_submodules, 1
+
+set :use_sudo, false
+set :default_shell, "sh -l" # Use login shell for appropriate PATH
 
 set :shared_children, %w(log tmp system)
 
-server 'v2.whatcrop.org', :web, :app, :db, :primary => true
-
-after 'deploy:restart', 'deploy:cleanup'
-after 'deploy:finalize_update', 'deploy:bundle_update'
+set :rake, 'bundle exec rake'
 
 namespace :deploy do
   task :start do ; end
@@ -28,3 +26,6 @@ namespace :deploy do
     run "cd #{current_path} && bundle check || bundle install"
   end
 end
+
+after 'deploy:restart', 'deploy:cleanup'
+after 'deploy:finalize_update', 'deploy:bundle_update'
