@@ -1,5 +1,6 @@
 &= @game.inspect
 %form{ :action => "/games/#{@game.id}/rounds", :method => :post }
   %input{ :type => :text, :name => :crop_choice, :value => 'a' }
-  %input{ :type => :text, :name => :weather, :value => 'dry' }
+  %input{ :type => :text, :name => :weather,     :value => 'dry' }
+  %input{ :type => :text, :name => :score,       :value => '50' }
   %input{ :type => :submit }
