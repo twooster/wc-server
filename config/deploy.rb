@@ -10,6 +10,8 @@ set :rake, 'bundle exec rake'
 
 set :default_shell, "sh -l"
 
+set :shared_children, %w(log tmp)
+
 server 'v2.whatcrop.org', :web, :app, :db, :primary => true
 
 after 'deploy:restart', 'deploy:cleanup'
