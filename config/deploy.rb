@@ -10,7 +10,7 @@ set :rake, 'bundle exec rake'
 
 set :default_shell, "sh -l"
 
-set :shared_children, %w(log tmp)
+set :shared_children, %w(log tmp system)
 
 server 'v2.whatcrop.org', :web, :app, :db, :primary => true
 

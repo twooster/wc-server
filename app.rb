@@ -1,4 +1,7 @@
-require File.dirname(__FILE__) + '/secrets.rb' rescue nil
+begin
+  require File.join(File.dirname(__FILE__), 'system', 'secrets.rb')
+rescue LoadError => e
+end
 
 require 'rubygems'
 require 'bundler/setup'
