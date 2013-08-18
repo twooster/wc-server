@@ -8,4 +8,10 @@ $stderr.reopen(log)
 
 require File.dirname(__FILE__) + '/app.rb'
 
-run WhatCrop::App.new
+map '/' do
+  run WhatCrop::UserApp.new
+end
+
+map '/admin' do
+  run WhatCrop::AdminApp.new
+end

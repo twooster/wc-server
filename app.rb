@@ -14,7 +14,7 @@ require 'uri'
 require './models'
 
 module WhatCrop
-  class App < Sinatra::Base
+  class BaseApp < Sinatra::Base
     register Sinatra::ActiveRecordExtension
 
     BASEDIR = File.dirname(File.expand_path(__FILE__))
@@ -37,7 +37,53 @@ module WhatCrop
 
     set :public_folder,  "#{BASEDIR}/public"
     set :static,         true
+  end
 
+  class AdminApp < BaseApp
+    set :admin_password, nil
+
+    configure :development do
+      set :admin_password, 'dev'
+    end
+
+    configure :production do
+      set :admin_password, (ENV['ADMIN_PASSWORD'] || raise)
+    end
+
+    before '/protected/?*' do
+      unless session[:logged_in] == true
+        redirect to('/')
+      end
+    end
+
+    get '/' do
+      "yup, index, and #{session[:logged_in]}"
+    end
+
+    get '/login' do
+      haml :admin_login
+    end
+
+    post '/login' do
+      if params[:password] == settings.admin_password
+        session[:logged_in] = true
+        redirect to('/protected')
+      else
+        haml :admin_login, :locals => { :bad_password => true }
+      end
+    end
+
+    get '/logout' do
+      session.delete(:logged_in)
+      redirect to('/')
+    end
+
+    get '/protected' do
+      haml :admin_index
+    end
+  end
+
+  class UserApp < BaseApp
     before do
       if gid = session[:gid]
         @game = Models::Game.where(:id => gid).first
