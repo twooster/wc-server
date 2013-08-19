@@ -12,28 +12,22 @@ module WhatCrop
       set :admin_password, (ENV['ADMIN_PASSWORD'] || raise)
     end
 
-    before '/protected/?*' do
+    before '/*' do
+      pass if ['logout', ''].include? params[:splat].first
+
       unless session[:logged_in] == true
         redirect to('/')
       end
     end
 
     get '/' do
-      if session[:logged_in] == true
-        redirect to('/protected')
-      else
-        redirect to('/login')
-      end
-    end
-
-    get '/login' do
       haml :login
     end
 
-    post '/login' do
+    post '/' do
       if params[:password] == settings.admin_password
         session[:logged_in] = true
-        redirect to('/protected')
+        redirect to('/dashboard')
       else
         haml :login, :locals => { :bad_password => true }
       end
@@ -44,8 +38,8 @@ module WhatCrop
       redirect to('/')
     end
 
-    get '/protected' do
-      haml :index
+    get '/dashboard' do
+      haml :dashboard
     end
   end
 end
