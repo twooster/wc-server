@@ -32,6 +32,7 @@ module WhatCrop
     end
 
     configure :production do
+      set :sessions, :domain => '.whatcrop.org'
       set :session_secret, (ENV['SESSION_SECRET'] || raise)
     end
 
