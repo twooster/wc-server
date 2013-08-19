@@ -1,2 +1,22 @@
 %h1 Admin Area
-%p Some content
+%h2 Games
+- if locals[:games].empty?
+  %p.text-info No games have been played
+- else
+  %table.table
+    %tr
+      %th Id
+      %th Score
+      %th Complete?
+      %th See More
+    - locals[:games].each do |game|
+      %tr
+        %td= game.id
+        %td= game.score
+        %td
+          - if game.complete?
+            %i.icon-check
+        %td
+          %a{ :href => to("/games/#{game.id}") }
+            See More
+            %i.icon-chevron-right

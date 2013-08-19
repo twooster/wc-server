@@ -39,7 +39,7 @@ module WhatCrop
     end
 
     get '/dashboard' do
-      haml :dashboard
+      haml :dashboard, :locals => { :games => Models::Game.all }
     end
   end
 end

@@ -11,6 +11,10 @@ module WhatCrop
         last_round == max_rounds
       end
 
+      def score
+        rounds.sum(&:score)
+      end
+
       def record_round(attrs = {})
         return nil if complete?
 
