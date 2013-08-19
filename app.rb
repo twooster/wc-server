@@ -26,6 +26,7 @@ module WhatCrop
     configure :development do
       enable :show_exceptions, :dump_errors
       disable :raise_errors, :clean_trace
+      set :database, 'sqlite://development.db'
     end
 
     configure :test do
