@@ -5,7 +5,7 @@ module WhatCrop
     set :admin_password, nil
 
     configure :development do
-      set :admin_password, 'dev'
+      set :admin_password, 'admin'
     end
 
     configure :production do
@@ -19,7 +19,11 @@ module WhatCrop
     end
 
     get '/' do
-      "yup, index, and #{session[:logged_in]}"
+      if session[:logged_in] == true
+        redirect to('/protected')
+      else
+        redirect to('/login')
+      end
     end
 
     get '/login' do
@@ -41,7 +45,7 @@ module WhatCrop
     end
 
     get '/protected' do
-      haml :dashboard
+      haml :index
     end
   end
 end
