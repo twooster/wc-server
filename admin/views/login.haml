@@ -1,5 +1,12 @@
-%form.form-inline{ :method => :post }
+%form.form-horizontal{ :method => :post }
   %fieldset
     %legend Login
-    %input.input-medium{ :type => :password, :name => :password, :placeholder => "Password" }
-    %button.btn{ :type => :submit } Login
+    .control-group{ :class => ('error' if locals[:bad_password]) }
+      %label.control-label{ :for => :password } Password
+      .controls
+        %input.input-medium{ :type => :password, :name => :password, :placeholder => "Password" }
+        - if locals[:bad_password]
+          %span.help-inline Incorrect password
+    .control-group
+      .controls
+        %button.btn.btn-primary{ :type => :submit } Login
