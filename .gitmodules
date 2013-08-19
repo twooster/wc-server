@@ -1,3 +1,0 @@
-[submodule "public/frontend"]
-	path = public/frontend
-	url = git://github.com/bookstein/whatcrop
