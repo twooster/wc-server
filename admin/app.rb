@@ -29,6 +29,7 @@ module WhatCrop
         session[:logged_in] = true
         redirect to('/dashboard')
       else
+        status 401
         haml :login, :locals => { :bad_password => true }
       end
     end
