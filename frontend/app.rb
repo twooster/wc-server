@@ -15,7 +15,7 @@ module WhatCrop
     end
 
     post '/games' do
-      game = Models::Game.create!(:max_rounds => 50)
+      game = Models::Game.create!(:label => params[:label].strip)
       session[:gid] = game.id
       redirect to("/games/#{game.id}")
     end
@@ -38,20 +38,12 @@ module WhatCrop
 
     post '/games/:id/rounds' do
       if @game.record_round(
+          :game_over   => params[:game_over],
           :weather     => params[:weather],
           :crop_choice => params[:crop_choice],
           :score       => params[:score]
         )
-        if @game.complete?
-          {
-            :status => 'game_complete',
-            :redirect => to("/games/#{params[:id]}/complete")
-          }
-        else
-          {
-            :status => 'round_complete'
-          }
-        end.to_json
+        200
       else
         400
       end

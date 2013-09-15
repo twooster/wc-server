@@ -6,12 +6,14 @@
   %table.table
     %tr
       %th Id
+      %th Label
       %th Score
       %th Complete?
       %th See More
     - locals[:games].each do |game|
       %tr
         %td= game.id
+        %td= game.label
         %td= game.score
         %td
           - if game.complete?
