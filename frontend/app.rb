@@ -17,7 +17,7 @@ module WhatCrop
     post '/games' do
       game = Models::Game.create!(:label => params[:label].strip)
       session[:gid] = game.id
-      200
+      { :id => game.id }.to_json
     end
 
     before '/games/:id/?*' do
