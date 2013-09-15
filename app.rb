@@ -27,6 +27,10 @@ module WhatCrop
       enable :show_exceptions, :dump_errors
       disable :raise_errors, :clean_trace
       set :database, 'sqlite://development.db'
+
+      before do
+        headers 'Access-Control-Allow-Origin' => '*'
+      end
     end
 
     configure :test do
