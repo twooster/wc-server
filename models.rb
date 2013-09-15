@@ -10,18 +10,22 @@ module WhatCrop
       def record_round(attrs = {})
         with_lock do
           reload
-          unless complete?
-            prev_round = last_round || 0
-            game_over  = attrs.delete(:game_over)
+          return false if complete?
 
-            rounds.create!(attrs) do |round|
-              round.round_number = prev_round
-            end
+          round_num  = (last_round || -1) + 1
+          game_over  = attrs.delete(:game_over) || false
 
-            update_attributes!(:last_round => prev_round + 1,
-                               :complete   => game_over)
-            self
+          last_round = rounds.order('round_number DESC').first
+          last_round_at = last_round && last_round.created_at || created_at
+
+          rounds.create!(attrs) do |round|
+            round.round_number  = round_num
+            round.seconds_taken = (Time.now - last_round_at).to_i
           end
+
+          update_attributes!(:last_round => round_num,
+                             :complete   => game_over)
+          self
         end
       end
     end
