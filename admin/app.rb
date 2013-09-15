@@ -42,5 +42,10 @@ module WhatCrop
     get '/dashboard' do
       haml :dashboard, :locals => { :games => Models::Game.all }
     end
+
+    get '/games/:id' do
+      game = Models::Game.find(params[:id])
+      haml :game, :locals => { :game => game }
+    end
   end
 end

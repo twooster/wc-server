@@ -1,0 +1,20 @@
+- game = locals[:game]
+%h1 Game ##{game.id} Details
+%h2 Rounds
+- if (rounds = game.rounds).empty?
+  %p.text-info No rounds have been played
+- else
+  %table.table
+    %tr
+      %th Round Number
+      %th Weather
+      %th Crop Choice
+      %th Score Delta
+      %th Time Taken
+    - rounds.each do |round|
+      %tr
+        %td= round.round_number
+        %td= round.weather
+        %td= round.crop_choice
+        %td= round.score
+        %td #{round.seconds_taken} seconds
