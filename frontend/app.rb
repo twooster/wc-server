@@ -11,29 +11,17 @@ module WhatCrop
     end
 
     get '/' do
-      haml :index
+      'Nothing here'
     end
 
     post '/games' do
       game = Models::Game.create!(:label => params[:label].strip)
       session[:gid] = game.id
-      redirect to("/games/#{game.id}")
+      200
     end
 
     before '/games/:id/?*' do
       401 unless @game && @game.id == params[:id]
-    end
-
-    get '/games/:id' do
-      redirect to('/game/:id/complete') if @game.complete?
-
-      haml :game, :locals => { :game => @game }
-    end
-
-    get '/games/:id/complete' do
-      redirect to("/games/#{params[:id]}") unless @game.complete?
-
-      haml :game_complete, :locals => { :game => @game }
     end
 
     post '/games/:id/rounds' do
