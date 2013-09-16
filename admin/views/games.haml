@@ -3,6 +3,11 @@
 - if locals[:games].empty?
   %p.text-info No games have been played
 - else
+  %p.text-info
+    %a{ :href => to('/games/csv') }
+      Download All Games CSV
+    %a{ :href => to('/games/csv?filter=complete') }
+      Download Complete Games CSV
   %table.table
     %tr
       %th Id

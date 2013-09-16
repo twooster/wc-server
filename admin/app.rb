@@ -1,3 +1,5 @@
+require 'csv'
+
 module WhatCrop
   class AdminApp < BaseApp
     set :app_file, __FILE__
@@ -27,7 +29,7 @@ module WhatCrop
     post '/' do
       if params[:password] == settings.admin_password
         session[:logged_in] = true
-        redirect to('/dashboard')
+        redirect to('/games')
       else
         status 401
         haml :login, :locals => { :bad_password => true }
@@ -39,13 +41,66 @@ module WhatCrop
       redirect to('/')
     end
 
-    get '/dashboard' do
-      haml :dashboard, :locals => { :games => Models::Game.all }
+    get '/games' do
+      haml :games, :locals => { :games => Models::Game.all }
+    end
+
+    get '/games/csv' do
+      content_type 'text/csv'
+
+      filename = "all-games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
+      headers \
+        'Content-Disposition' => "inline; filename=\"#{filename}\""
+
+      filter = params[:filter]
+
+      games = Models::Game.scoped
+      games = games.where(:complete => true) if filter == 'complete'
+
+      stream do |out|
+        games.each do |game|
+          out << generate_game_csv(game)
+        end
+      end
     end
 
     get '/games/:id' do
       game = Models::Game.find(params[:id])
       haml :game, :locals => { :game => game }
+    end
+
+    get '/games/:id/csv' do
+      content_type 'text/csv'
+
+      game = Models::Game.find(params[:id])
+
+      filename = "game-#{game.id}-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
+      headers \
+        'Content-Disposition' => "inline; filename=\"#{filename}\""
+
+      generate_game_csv(game)
+    end
+
+    def generate_game_csv(game)
+      buf = []
+      cum_score = 0
+      last_time = game.created_at
+      game.rounds.each do |round|
+        cum_score += round.score
+        buf << CSV.generate_line([
+          game.id,
+          game.label,
+          round.round_number,
+          round.crop_choice,
+          round.weather,
+          round.created_at - last_time,
+          cum_score,
+          round.score
+        ])
+        last_time = round.created_at
+      end
+      buf << ''
+      buf.join("\n")
     end
   end
 end
