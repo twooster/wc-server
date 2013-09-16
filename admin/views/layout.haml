@@ -4,10 +4,10 @@
     %title WhatCrop Admin
     - if @subtitle
       = " - #{@subtitle}"
-    %link{ :rel  => 'stylesheet', :href => 'css/bootstrap.min.css' }
+    %link{ :rel  => 'stylesheet', :href => to('/css/bootstrap.min.css') }
   %body
     .container.content
       = yield
 
-    %script{ :src => 'js/jquery-1.10.2.min.js' }
-    %script{ :src => 'js/bootstrap.min.js' }
+    %script{ :src => to('/js/jquery-1.10.2.min.js') }
+    %script{ :src => to('/js/bootstrap.min.js') }
