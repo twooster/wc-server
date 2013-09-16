@@ -3,11 +3,15 @@
 - if locals[:games].empty?
   %p.text-info No games have been played
 - else
-  %p.text-info
-    %a{ :href => to('/games/csv') }
-      Download All Games CSV
-    %a{ :href => to('/games/csv?filter=complete') }
-      Download Complete Games CSV
+  %ul.inline
+    %li
+      %a{ :href => to('/games/csv') }
+        %i.icon-file
+        Download All Games CSV
+    %li
+      %a{ :href => to('/games/csv?filter=complete') }
+        %i.icon-file
+        Download Complete Games CSV
   %table.table
     %tr
       %th Id
@@ -23,6 +27,8 @@
         %td
           - if game.complete?
             %i.icon-check
+          - else
+            %i.icon-remove
         %td
           %a{ :href => to("/games/#{game.id}") }
             See More

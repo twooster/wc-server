@@ -1,7 +1,10 @@
 - game = locals[:game]
 %h1 Game ##{game.id} Details
-%p.text-info
-  %a{ :href => to("/games/#{game.id}/csv") } Download CSV
+%ul.inline
+  %li
+    %a{ :href => to("/games/#{game.id}/csv") }
+      %i.icon-file
+      Download CSV
 %h2 Rounds
 - if (rounds = game.rounds).empty?
   %p.text-info No rounds have been played
