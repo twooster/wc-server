@@ -21,7 +21,7 @@ module WhatCrop
     end
 
     before '/games/:id/?*' do
-      halt 401 unless @game && @game.id == params[:id]
+      halt 401 unless @game && @game.id == params[:id].to_i
     end
 
     post '/games/:id/rounds' do
