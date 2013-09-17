@@ -15,6 +15,8 @@ set :shared_children, %w(log tmp system)
 
 set :rake, 'bundle exec rake'
 
+set :migrate_env, "RACK_ENV=#{fetch(:rails_env, 'production')}"
+
 namespace :deploy do
   task :start do ; end
   task :stop do ; end
