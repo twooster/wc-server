@@ -41,21 +41,42 @@ module WhatCrop
       redirect to('/')
     end
 
+    def normalize_filter
+      filter = (params[:filter] || '').downcase
+      filter = 'all' unless %w[complete not-empty].include?(filter)
+      filter
+    end
+
+    def filter_games(filter)
+      games = Models::Game.scoped
+      case filter
+      when 'complete'
+        games = games.where(:complete => true)
+      when 'not-empty'
+        games = games.where('last_round IS NOT NULL')
+      end
+      games
+    end
+
     get '/games' do
-      haml :games, :locals => { :games => Models::Game.all }
+      games = filter_games(normalize_filter)
+
+      haml :games, :locals => {
+        :games => games,
+        :filter => params[:filter] || 'all'
+      }
     end
 
     get '/games/csv' do
+      filter = normalize_filter
+
       content_type 'text/csv'
 
-      filename = "all-games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
+      filename = "#{filter}-games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
       headers \
         'Content-Disposition' => "inline; filename=\"#{filename}\""
 
-      filter = params[:filter]
-
-      games = Models::Game.scoped
-      games = games.where(:complete => true) if filter == 'complete'
+      games = filter_games(filter)
 
       stream do |out|
         games.each do |game|

@@ -1,17 +1,31 @@
 %h1 Admin Area
 %h2 Games
+%ul.inline
+  %li
+    %a{ :href => to('/games?filter=complete') }
+      %i.icon-filter
+      Complete
+  %li
+    %a{ :href => to('/games?filter=not-empty') }
+      %i.icon-filter
+      Some Play
+  %li
+    %a{ :href => to('/games?filter=all') }
+      %i.icon-filter
+      All
+  %li
+    %a{ :href => to("/games/csv?filter=#{locals[:filter]}") }
+      %i.icon-file
+      Download CSV
 - if locals[:games].empty?
-  %p.text-info No games have been played
+  - case locals[:filter]
+    - when 'complete'
+      %p.text-error No games have been played to completion
+    - when 'not-empty'
+      %p.text-error No games have been played with round data
+    - when 'all'
+      %p.text-error No games have been played at all
 - else
-  %ul.inline
-    %li
-      %a{ :href => to('/games/csv') }
-        %i.icon-file
-        Download All Games CSV
-    %li
-      %a{ :href => to('/games/csv?filter=complete') }
-        %i.icon-file
-        Download Complete Games CSV
   %table.table
     %tr
       %th Id
