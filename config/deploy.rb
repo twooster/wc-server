@@ -11,7 +11,7 @@ set :git_enable_submodules, 1
 set :use_sudo, false
 set :default_shell, "sh -l" # Use login shell for appropriate PATH
 
-set :shared_children, %w(log tmp system)
+set :shared_children, %w(log tmp system js-game)
 
 set :rake, 'bundle exec rake'
 
