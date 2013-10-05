@@ -11,6 +11,10 @@
         %i.icon-filter
         Some Play
     %li
+      %a{ :href => to('/games?filter=empty') }
+        %i.icon-filter
+        No Play
+    %li
       %a{ :href => to('/games?filter=all') }
         %i.icon-filter
         All
@@ -36,6 +40,8 @@
       - case filter
       - when 'complete'
         There are no complete games
+      - when 'empty'
+        There are no unplayed games
       - when 'not-empty'
         There are no partially played games
       - when 'archived'

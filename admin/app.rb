@@ -49,6 +49,8 @@ module WhatCrop
       case filter
       when 'complete'
         games = games.where(:complete => true)
+      when 'empty'
+        games = games.where('last_round IS NULL')
       when 'not-empty'
         games = games.where('last_round IS NOT NULL')
       end
