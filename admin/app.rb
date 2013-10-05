@@ -41,42 +41,40 @@ module WhatCrop
       redirect to('/')
     end
 
-    def normalize_filter
-      filter = (params[:filter] || '').downcase
-      filter = 'all' unless %w[complete not-empty].include?(filter)
-      filter
-    end
+    get '/games' do
+      filter = (params[:filter] || 'all').downcase
 
-    def filter_games(filter)
       games = Models::Game.scoped
+
       case filter
       when 'complete'
         games = games.where(:complete => true)
       when 'not-empty'
         games = games.where('last_round IS NOT NULL')
       end
-      games
-    end
 
-    get '/games' do
-      games = filter_games(normalize_filter)
+      unless filter == 'archived'
+        games = games.where(:archived => false)
+      end
 
       haml :games, :locals => {
         :games => games,
-        :filter => params[:filter] || 'all'
+        :filter => params[:filter]
       }
     end
 
-    get '/games/csv' do
-      filter = normalize_filter
-
+    post '/games/csv' do
       content_type 'text/csv'
 
-      filename = "#{filter}-games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
+      filename = "games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
       headers \
         'Content-Disposition' => "inline; filename=\"#{filename}\""
 
-      games = filter_games(filter)
+      return '' unless params[:games]
+      games = Models::Game.where(:id => params[:games])
+
+      # REST this is not
+      games.update_all(:archived => true) if params[:archive]
 
       stream do |out|
         games.each do |game|
@@ -88,6 +86,13 @@ module WhatCrop
     get '/games/:id' do
       game = Models::Game.find(params[:id])
       haml :game, :locals => { :game => game }
+    end
+
+    post '/games/:id' do
+      game = Models::Game.find(params[:id])
+
+      game.update_attribute(:archived, !!params[:archived])
+      redirect to("/games/#{params[:id]}")
     end
 
     get '/games/:id/csv' do

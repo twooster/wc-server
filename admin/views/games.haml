@@ -1,49 +1,62 @@
 %h1 Admin Area
 %h2 Games
-%ul.inline
-  %li
-    %a{ :href => to('/games?filter=complete') }
-      %i.icon-filter
-      Complete
-  %li
-    %a{ :href => to('/games?filter=not-empty') }
-      %i.icon-filter
-      Some Play
-  %li
-    %a{ :href => to('/games?filter=all') }
-      %i.icon-filter
-      All
-  %li
-    %a{ :href => to("/games/csv?filter=#{locals[:filter]}") }
-      %i.icon-file
-      Download CSV
-- if locals[:games].empty?
-  - case locals[:filter]
-    - when 'complete'
-      %p.text-error No games have been played to completion
-    - when 'not-empty'
-      %p.text-error No games have been played with round data
-    - when 'all'
-      %p.text-error No games have been played at all
-- else
-  %table.table
-    %tr
-      %th Id
-      %th Label
-      %th Score
-      %th Complete?
-      %th See More
-    - locals[:games].each do |game|
+%form{ :method => :post, :action => to('/games/csv') }
+  %ul.inline
+    %li
+      %a{ :href => to('/games?filter=complete') }
+        %i.icon-filter
+        Complete
+    %li
+      %a{ :href => to('/games?filter=not-empty') }
+        %i.icon-filter
+        Some Play
+    %li
+      %a{ :href => to('/games?filter=all') }
+        %i.icon-filter
+        All
+    %li
+      %a{ :href => to('/games?filter=archived') }
+        %i.icon-filter
+        Archived
+    %li
+      %button.btn{ :type => :submit }
+        Download CSV
+      %button.btn{ :type => :submit, :name => 'archive' }
+        Download CSV &amp; Archive
+  - if locals[:games].empty?
+    %p.text-error
+      No games have been played
+      - case locals[:filter]
+        - when 'complete'
+          to completion
+        - when 'not-empty'
+          with round data
+        - when 'archived'
+          at all
+  - else
+    %table.table
       %tr
-        %td= game.id
-        %td= game.label
-        %td= game.score
-        %td
-          - if game.complete?
-            %i.icon-check
-          - else
-            %i.icon-remove
-        %td
-          %a{ :href => to("/games/#{game.id}") }
-            See More
-            %i.icon-chevron-right
+        %th
+          %i.icon-check
+        %th Id
+        %th Label
+        %th Score
+        %th Complete?
+        %th See More
+      - locals[:games].each do |game|
+        %tr
+          %td
+            %input{ :type => 'checkbox', :name => 'games[]',
+                    :value => game.id, :checked => :checked }
+          %td= game.id
+          %td= game.label
+          %td= game.score
+          %td
+            - if game.complete?
+              %i.icon-check
+            - else
+              %i.icon-remove
+          %td
+            %a{ :href => to("/games/#{game.id}") }
+              See More
+              %i.icon-chevron-right
