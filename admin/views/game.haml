@@ -8,10 +8,14 @@
   %li
     %form{ :method => :post }
       - if game.archived?
-        %button.btn{ :type => :submit } Unarchive
+        %button.btn{ :type => :submit }
+          %i.icon-flag
+          Unarchive
       - else
         %input{ :type => :hidden, :name => :archived, :value => true }
-        %button.btn{ :type => :submit } Archive
+        %button.btn{ :type => :submit }
+          %i.icon-flag
+          Archive
 %h2 Rounds
 - if (rounds = game.rounds).empty?
   %p.text-info No rounds have been played

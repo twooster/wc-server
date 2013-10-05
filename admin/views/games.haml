@@ -1,6 +1,6 @@
 %h1 Admin Area
 %h2 Games
-%form{ :method => :post, :action => to('/games/csv') }
+%form{ :method => :post, :action => to('/games') }
   %ul.inline
     %li
       %a{ :href => to('/games?filter=complete') }
@@ -19,20 +19,29 @@
         %i.icon-filter
         Archived
     %li
-      %button.btn{ :type => :submit }
-        Download CSV
-      %button.btn{ :type => :submit, :name => 'archive' }
-        Download CSV &amp; Archive
+      %button.btn{ :type => :submit, :name => :type, :value => :csv }
+        %i.icon-download
+        Download CSVs
+    %li
+      - if filter == 'archived'
+        %button.btn{ :type => :submit, :name => :type, :value => :unarchive }
+          %i.icon-flag
+          Unarchive
+      - else
+        %button.btn{ :type => :submit, :name => :type, :value => :archive }
+          %i.icon-flag
+          Archive
   - if locals[:games].empty?
     %p.text-error
-      No games have been played
-      - case locals[:filter]
-        - when 'complete'
-          to completion
-        - when 'not-empty'
-          with round data
-        - when 'archived'
-          at all
+      - case filter
+      - when 'complete'
+        There are no complete games
+      - when 'not-empty'
+        There are no partially played games
+      - when 'archived'
+        There are no archived games
+      - when 'all'
+        There are no non-archived games
   - else
     %table.table.table-striped
       %tr

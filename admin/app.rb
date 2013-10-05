@@ -59,23 +59,28 @@ module WhatCrop
       }
     end
 
-    post '/games/csv' do
-      content_type 'text/csv'
-
-      filename = "games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
-      headers \
-        'Content-Disposition' => "inline; filename=\"#{filename}\""
-
+    post '/games' do
       return '' unless params[:games]
       games = Models::Game.where(:id => params[:games])
 
-      # REST this is not
-      games.update_all(:archived => true) if params[:archive]
+      case params[:type]
+      when 'csv'
+        content_type 'text/csv'
 
-      stream do |out|
-        games.each do |game|
-          out << generate_game_csv(game)
+        filename = "games-#{Time.now.strftime('%y%m%d-%H%M')}.csv"
+        headers \
+          'Content-Disposition' => "inline; filename=\"#{filename}\""
+
+        stream do |out|
+          games.each do |game|
+            out << generate_game_csv(game)
+          end
         end
+      when 'archive', 'unarchive'
+        games.update_all(:archived => params[:type] == 'archive')
+        redirect back
+      else
+        'How did you get here?'
       end
     end
 
