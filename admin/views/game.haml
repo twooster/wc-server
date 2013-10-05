@@ -2,8 +2,12 @@
 %h1 Game ##{game.id} Details
 %ul.inline
   %li
+    %a{ :href => to('/games') }
+      %i.icon-arrow-left
+      All Games
+  %li
     %a{ :href => to("/games/#{game.id}/csv") }
-      %i.icon-file
+      %i.icon-download
       Download CSV
   %li
     %form{ :method => :post }
