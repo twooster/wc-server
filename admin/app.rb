@@ -44,17 +44,13 @@ module WhatCrop
     get '/games' do
       filter = (params[:filter] || 'all').downcase
 
-      games = Models::Game.scoped
+      games = Models::Game.where(:archived => filter == 'archived')
 
       case filter
       when 'complete'
         games = games.where(:complete => true)
       when 'not-empty'
         games = games.where('last_round IS NOT NULL')
-      end
-
-      unless filter == 'archived'
-        games = games.where(:archived => false)
       end
 
       haml :games, :locals => {
